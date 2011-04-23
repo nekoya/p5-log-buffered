@@ -53,6 +53,24 @@ sub _set_log {
     };
     $log;
 }
+
+sub to_str {
+    my ($self) = @_;
+    my @logs;
+    for my $row (@{ $self->{logs} }) {
+        push @logs, sprintf("[%s] %s", $row->{level}, $row->{message});
+    }
+    my $log = join("\n", @logs);
+    $log ? "$log\n" : '';
+}
+
+sub flush {
+    my ($self) = @_;
+    my $log = $self->to_str;
+    $self->{logs} = [];
+    $log;
+}
+
 1;
 __END__
 
