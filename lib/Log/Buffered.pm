@@ -17,9 +17,42 @@ sub LOG_CRIT   { 'crit' }
 
 sub new {
     my $class = shift;
-    bless {}, $class;
+    bless {
+        logs => [],
+        debug_mode => 0,
+    }, $class;
 }
 
+sub debug_on  { $_[0]->{debug_mode} = 1 }
+sub debug_off { $_[0]->{debug_mode} = 0 }
+
+sub append {
+    my $self = shift;
+    push @{ $self->{logs} }, $self->_set_log(@_);
+    shift; # return message
+}
+sub logging { shift->append(@_) }
+sub prepend {
+    my $self = shift;
+    unshift @{ $self->{logs} }, $self->_set_log(@_);
+    shift; # return message
+}
+
+sub debug  { $_[0]->append($_[1], 'debug') if $_[0]->{debug_mode} }
+sub info   { $_[0]->append($_[1], 'info') }
+sub notice { $_[0]->append($_[1], 'notice') }
+sub warn   { $_[0]->append($_[1], 'warn') }
+sub error  { $_[0]->append($_[1], 'error') }
+sub crit   { $_[0]->append($_[1], 'crit') }
+
+sub _set_log {
+    my ($self, $message, $level) = @_;
+    my $log = {
+        level   => $level   || $self->LOG_INFO,
+        message => $message || '',
+    };
+    $log;
+}
 1;
 __END__
 
