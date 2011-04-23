@@ -8,12 +8,21 @@ use Carp;
 use Exporter::Lite;
 
 our @EXPORT = qw(LOG_DEBUG LOG_INFO LOG_NOTICE LOG_WARN LOG_ERROR LOG_CRIT);
-sub LOG_DEBUG  { 'debug' }
-sub LOG_INFO   { 'info' }
-sub LOG_NOTICE { 'notice' }
-sub LOG_WARN   { 'warn' }
-sub LOG_ERROR  { 'error' }
-sub LOG_CRIT   { 'crit' }
+sub LOG_DEBUG  { 10 }
+sub LOG_INFO   { 20 }
+sub LOG_NOTICE { 30 }
+sub LOG_WARN   { 40 }
+sub LOG_ERROR  { 50 }
+sub LOG_CRIT   { 60 }
+
+our $LEVEL = {
+    10 => 'debug',
+    20 => 'info',
+    30 => 'notice',
+    40 => 'warn',
+    50 => 'error',
+    60 => 'crit',
+};
 
 sub new {
     my $class = shift;
@@ -38,12 +47,12 @@ sub prepend {
     shift; # return message
 }
 
-sub debug  { $_[0]->append($_[1], 'debug') if $_[0]->{debug_mode} }
-sub info   { $_[0]->append($_[1], 'info') }
-sub notice { $_[0]->append($_[1], 'notice') }
-sub warn   { $_[0]->append($_[1], 'warn') }
-sub error  { $_[0]->append($_[1], 'error') }
-sub crit   { $_[0]->append($_[1], 'crit') }
+sub debug  { $_[0]->append($_[1], $_[0]->LOG_DEBUG) if $_[0]->{debug_mode} }
+sub info   { $_[0]->append($_[1], $_[0]->LOG_INFO) }
+sub notice { $_[0]->append($_[1], $_[0]->LOG_NOTICE) }
+sub warn   { $_[0]->append($_[1], $_[0]->LOG_WARN) }
+sub error  { $_[0]->append($_[1], $_[0]->LOG_ERROR) }
+sub crit   { $_[0]->append($_[1], $_[0]->LOG_CRIT) }
 
 sub _set_log {
     my ($self, $message, $level) = @_;
@@ -58,7 +67,7 @@ sub to_str {
     my ($self) = @_;
     my @logs;
     for my $row (@{ $self->{logs} }) {
-        push @logs, sprintf("[%s] %s", $row->{level}, $row->{message});
+        push @logs, sprintf("[%s] %s", $LEVEL->{ $row->{level} }, $row->{message});
     }
     my $log = join("\n", @logs);
     $log ? "$log\n" : '';
@@ -69,6 +78,15 @@ sub flush {
     my $log = $self->to_str;
     $self->{logs} = [];
     $log;
+}
+
+sub detect_max_level {
+    my ($self) = @_;
+    my $max = 0;
+    for my $row (@{ $self->{logs} }) {
+        $max = $row->{level} if $row->{level} > $max;
+    }
+    $max;
 }
 
 1;
