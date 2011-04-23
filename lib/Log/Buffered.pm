@@ -7,7 +7,7 @@ our $VERSION = '0.01';
 use Carp;
 use Exporter::Lite;
 
-our @EXPORT = qw(LOG_DEBUG LOG_INFO LOG_NOTICE LOG_WARN LOG_CRIT);
+our @EXPORT = qw(LOG_DEBUG LOG_INFO LOG_NOTICE LOG_WARN LOG_ERROR LOG_CRIT);
 sub LOG_DEBUG  { 'debug' }
 sub LOG_INFO   { 'info' }
 sub LOG_NOTICE { 'notice' }

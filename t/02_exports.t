@@ -5,11 +5,11 @@ use Test::More;
 use Log::Buffered;
 
 my $logger = Log::Buffered->new;
-can_ok $logger, 'LOG_DEBUG';
-can_ok $logger, 'LOG_INFO';
-can_ok $logger, 'LOG_NOTICE';
-can_ok $logger, 'LOG_WARN';
-can_ok $logger, 'LOG_ERROR';
-can_ok $logger, 'LOG_CRIT';
+is LOG_DEBUG, 'debug';
+is LOG_INFO, 'info';
+is LOG_NOTICE, 'notice';
+is LOG_WARN, 'warn';
+is LOG_ERROR, 'error';
+is LOG_CRIT, 'crit';
 
 done_testing;
