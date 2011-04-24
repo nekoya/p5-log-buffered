@@ -17,19 +17,6 @@ subtest "logging methods" => sub {
     ], 'assert logs';
 };
 
-subtest "debug log" => sub {
-    my $logger = Log::Buffered->new;
-    $logger->debug('debug1');
-    $logger->debug_on;
-    $logger->debug('debug2');
-    $logger->debug_off;
-    $logger->debug('debug3');
-
-    is_deeply $logger->{logs}, [
-    { level => LOG_DEBUG, message => 'debug2' },
-    ], 'assert logs';
-};
-
 subtest "other level methods" => sub {
     my $logger = Log::Buffered->new;
     $logger->info('log info');

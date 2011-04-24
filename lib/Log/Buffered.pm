@@ -25,15 +25,16 @@ our $LEVEL = {
 };
 
 sub new {
-    my $class = shift;
+    my ($class, $args) = @_;
     bless {
         logs => [],
-        debug_mode => 0,
+        debug_mode => $args->{debug} || 0,
     }, $class;
 }
 
 sub debug_on  { $_[0]->{debug_mode} = 1 }
 sub debug_off { $_[0]->{debug_mode} = 0 }
+sub is_debug  { $_[0]->{debug_mode} }
 
 sub append {
     my $self = shift;
