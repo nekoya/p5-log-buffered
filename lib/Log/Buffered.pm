@@ -29,6 +29,7 @@ sub new {
     bless {
         logs => [],
         debug_mode => $args->{debug} || 0,
+        fail_criteria => $args->{failed} || LOG_WARN,
     }, $class;
 }
 
@@ -88,6 +89,11 @@ sub detect_max_level {
         $max = $row->{level} if $row->{level} > $max;
     }
     $max;
+}
+
+sub is_failed {
+    my ($self) = @_;
+    return ($self->detect_max_level >= $self->{fail_criteria}) ? 1 : 0;
 }
 
 1;
