@@ -101,21 +101,88 @@ __END__
 
 =head1 NAME
 
-Log::Buffered - 
+Log::Buffered - Log buffering module
 
 =head1 SYNOPSIS
 
     my $logger = Log::Buffered->new;
+    $logger->info('information');
+    $logger->warn('warning');
+    print STDERR $logger->to_str if $logger->is_failed;
 
 =head1 DESCRIPTION
 
-B<Log::Buffered> 
+B<Log::Buffered> is log buffering module. This module does not have function that publish log for any device (file, e-mail, etc.).
+
+B<Log::Buffered> store all logs into the object. You can determine to use that logs when the application finished. For example, write logs to STDERR if any errors occurred.
 
 =head1 METHODS
 
 =over 4
 
-=item new
+=item new([\%options])
+
+    $logger = Log::Buffered({ debug => 1, failed => LOG_ERROR });
+
+debug: debug mode on.
+
+failed: alert criteria for I<is_failed> method.
+
+=item append($message, [$level])
+
+Append log. Default level is I<LOG_INFO>.
+
+=item logging($message, [$level])
+
+This method is alias for I<append>.
+
+=item prepend($message, [$level])
+
+Prepend log.
+
+=item info($message)
+
+=item notice($message)
+
+=item warn($message)
+
+=item error($message)
+
+=item crit($message)
+
+Append log for each level.
+
+=item debug($message)
+
+Append debug log when debug mode on.
+
+=item debug_on
+
+=item debug_off
+
+Debug mode on/off.
+
+=item is_debug
+
+Return debug mode is enabled or not.
+
+=item to_str
+
+Get all logs as strings.
+
+=item flush
+
+Flush all logs and return text by I<to_str>.
+
+=item detect_max_level
+
+Return max level of stored logs.
+
+=item is_failed
+
+Return that max log level is over alert criteria or not.
+
+Default alert criteria is I<LOG_WARN>, you can specify that level by constructor's B<failed> option.
 
 =back
 
