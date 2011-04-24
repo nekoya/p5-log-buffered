@@ -1,0 +1,19 @@
+This is Perl module Log::Buffered
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+    % perl Makefile.PL
+    % make && make test
+    % make install
+
+DOCUMENTATION
+
+Log::Buffered documentation is available as in POD. So you can do:
+
+    % perldoc Log::Buffered
+
+to read the documentation online with your favorite pager.
+
+Ryo Miyake
