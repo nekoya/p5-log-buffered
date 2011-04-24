@@ -4,8 +4,6 @@ use Test::More;
 
 use Log::Buffered;
 
-my $logger = Log::Buffered->new;
-
 subtest "debug log" => sub {
     my $logger = Log::Buffered->new;
 
