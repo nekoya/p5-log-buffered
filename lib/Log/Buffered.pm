@@ -30,6 +30,7 @@ sub new {
         logs => [],
         debug_mode => $args->{debug} || 0,
         fail_criteria => $args->{failed} || LOG_WARN,
+        stream => 0,
     }, $class;
 }
 
@@ -58,11 +59,14 @@ sub crit   { $_[0]->append($_[1], $_[0]->LOG_CRIT) }
 
 sub _set_log {
     my ($self, $message, $level) = @_;
-    my $log = {
+    my $row = {
         level   => $level   || $self->LOG_INFO,
         message => $message || '',
     };
-    $log;
+    if ($self->{stream}) {
+        print $self->format_row($row), "\n";
+    }
+    $row;
 }
 
 sub format_row {
