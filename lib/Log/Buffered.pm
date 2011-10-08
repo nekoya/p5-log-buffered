@@ -65,11 +65,16 @@ sub _set_log {
     $log;
 }
 
+sub format_row {
+    my ($self, $row) = @_;
+    sprintf "[%s] %s", $LEVEL->{ $row->{level} }, $row->{message};
+}
+
 sub to_str {
     my ($self) = @_;
     my @logs;
     for my $row (@{ $self->{logs} }) {
-        push @logs, sprintf("[%s] %s", $LEVEL->{ $row->{level} }, $row->{message});
+        push @logs, $self->format_row($row);
     }
     my $log = join("\n", @logs);
     $log ? "$log\n" : '';
