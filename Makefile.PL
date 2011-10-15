@@ -7,5 +7,7 @@ requires 'Exporter::Lite';
 author_tests('xt');
 
 test_requires 'Test::More';
+test_requires 'IO::Capture::Stdout';
+test_requires 'IO::Capture::Stderr';
 
 WriteAll;
