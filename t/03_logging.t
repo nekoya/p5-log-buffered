@@ -10,11 +10,11 @@ subtest "logging methods" => sub {
     $logger->logging('second log', LOG_WARN);
     $logger->prepend('prepend log', LOG_NOTICE);
 
-    is_deeply $logger->{logs}, [
-    { level => LOG_NOTICE, message => 'prepend log' },
-    { level => LOG_INFO, message => 'my first log' },
-    { level => LOG_WARN, message => 'second log' },
-    ], 'assert logs';
+    is $logger->to_str, <<'...';
+[notice] prepend log
+[info] my first log
+[warn] second log
+...
 };
 
 subtest "other level methods" => sub {
@@ -25,13 +25,13 @@ subtest "other level methods" => sub {
     $logger->error('log error');
     $logger->crit('log crit');
 
-    is_deeply $logger->{logs}, [
-    { level => LOG_INFO, message => 'log info' },
-    { level => LOG_NOTICE, message => 'log notice' },
-    { level => LOG_WARN, message => 'log warn' },
-    { level => LOG_ERROR, message => 'log error' },
-    { level => LOG_CRIT, message => 'log crit' },
-    ], 'assert logs';
+    is $logger->to_str, <<'...';
+[info] log info
+[notice] log notice
+[warn] log warn
+[error] log error
+[crit] log crit
+...
 };
 
 done_testing;

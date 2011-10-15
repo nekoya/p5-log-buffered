@@ -76,9 +76,19 @@ sub crit   { $_[0]->append($_[1], $_[0]->LOG_CRIT) }
 
 sub _set_log {
     my ($self, $message, $level) = @_;
+
+    # from Log::Minimal
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time);
+    my $now = sprintf(
+        "%04d-%02d-%02dT%02d:%02d:%02d",
+        $year + 1900,
+        $mon + 1, $mday, $hour, $min, $sec
+    );
+
     my $row = {
         level   => $level   || $self->LOG_INFO,
         message => $message || '',
+        time    => $now,
     };
     if ($self->{stream}) {
         my $msg = $self->{formatter}->($row) . "\n";

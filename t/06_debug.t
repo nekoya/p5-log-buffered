@@ -18,6 +18,8 @@ subtest "debug log" => sub {
     is $logger->is_debug, 0, 'debug mode off';
     $logger->debug('debug3');
 
+    my $time = delete $logger->{logs}->[0]->{time};
+    like $time, qr/^20\d\d-\d\d-\d\dT\d\d:\d\d:\d\d$/, 'assert log time format';
     is_deeply $logger->{logs}, [
     { level => LOG_DEBUG, message => 'debug2' },
     ], 'assert logs';
