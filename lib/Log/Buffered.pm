@@ -30,7 +30,7 @@ sub new {
         logs => [],
         debug_mode => $args->{debug} || 0,
         fail_criteria => $args->{failed} || LOG_WARN,
-        stream => 0,
+        stream => $args->{stream} || 0,
     }, $class;
 }
 
@@ -64,7 +64,12 @@ sub _set_log {
         message => $message || '',
     };
     if ($self->{stream}) {
-        print $self->format_row($row), "\n";
+        my $msg = $self->format_row($row) . "\n";
+        if ($self->{stream} == 2) {
+            print STDERR $msg;
+        } else {
+            print $msg;
+        }
     }
     $row;
 }
