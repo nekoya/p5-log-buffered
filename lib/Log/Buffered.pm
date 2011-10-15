@@ -26,12 +26,29 @@ our $LEVEL = {
 
 sub new {
     my ($class, $args) = @_;
-    bless {
+    my $self = bless {
         logs => [],
         debug_mode => $args->{debug} || 0,
         fail_criteria => $args->{failed} || LOG_WARN,
         stream => $args->{stream} || 0,
     }, $class;
+    $self->set_formatter($args->{format} || 'simple');
+    $self;
+}
+
+sub set_formatter {
+    my ($self, $format) = @_;
+    if (ref $format eq 'CODE') {
+        $self->{log_format} = $format;
+        return;
+    }
+
+    my $formats = {
+        simple => sub { sprintf "[%s] %s", $LEVEL->{ $_[0]->{level} }, $_[0]->{message} },
+        timed  => sub { sprintf "%s [%s] %s", $_[0]->{time}, $LEVEL->{ $_[0]->{level} }, $_[0]->{message} },
+    };
+    Carp::croak "$format is unknown format" unless $formats->{$format};
+    $self->{formatter} = $formats->{$format};
 }
 
 sub debug_on  { $_[0]->{debug_mode} = 1 }
@@ -64,7 +81,7 @@ sub _set_log {
         message => $message || '',
     };
     if ($self->{stream}) {
-        my $msg = $self->format_row($row) . "\n";
+        my $msg = $self->{formatter}->($row) . "\n";
         if ($self->{stream} == 2) {
             print STDERR $msg;
         } else {
@@ -74,16 +91,11 @@ sub _set_log {
     $row;
 }
 
-sub format_row {
-    my ($self, $row) = @_;
-    sprintf "[%s] %s", $LEVEL->{ $row->{level} }, $row->{message};
-}
-
 sub to_str {
     my ($self) = @_;
     my @logs;
     for my $row (@{ $self->{logs} }) {
-        push @logs, $self->format_row($row);
+        push @logs, $self->{formatter}->($row);
     }
     my $log = join("\n", @logs);
     $log ? "$log\n" : '';
