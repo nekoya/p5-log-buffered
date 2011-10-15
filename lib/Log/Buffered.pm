@@ -71,7 +71,7 @@ sub _set_log {
 
 sub format_row {
     my ($self, $row) = @_;
-    sprintf "[%-6s] %s", $LEVEL->{ $row->{level} }, $row->{message};
+    sprintf "[%s] %s", $LEVEL->{ $row->{level} }, $row->{message};
 }
 
 sub to_str {
